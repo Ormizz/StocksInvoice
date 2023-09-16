@@ -1,0 +1,77 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+        <!-- start page content wrapper-->
+        <div class="page-content-wrapper">
+          <!-- start page content-->
+         <div class="page-content">
+
+          <!--start breadcrumb-->
+          <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">Forms</div>
+            <div class="ps-3">
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0 p-0 align-items-center">
+                  <li class="breadcrumb-item"><a href="javascript:;"><ion-icon name="home-outline"></ion-icon></a>
+                  </li>
+                  <li class="breadcrumb-item active" aria-current="page">Form Layouts</li>
+                </ol>
+              </nav>
+            </div>
+            <div class="ms-auto">
+              <div class="btn-group">
+                <a href="{% url 'article_list' %}" class="btn btn-outline-primary">Retour</a>
+              </div>
+            </div>
+          </div>
+          <!--end breadcrumb-->
+            <div class="row">
+              <div class="col-xl-12 mx-auto">
+              
+                <div class="card">
+                  <div class="card-body">
+                    <div class="border p-3 rounded">
+                    <h6 class="mb-0 text-uppercase">Enregistrer un article</h6>
+                    <hr>
+                    <form class="row g-3" method="post" action="">
+                      {% csrf_token %}
+                      <div class="col-6">
+                        <label class="form-label">Libelle</label>
+                        <input required type="text" name="nom" {% if article %}value="{{article.nom}}"{% endif %} class="form-control">
+                      </div>
+                      <div class="col-6">
+                        <label class="form-label">Description</label>
+                        <input required type="text" name="description" {% if article %}value="{{article.description}}"{% endif %} class="form-control">
+                      </div>
+                      <div class="col-6">
+                        <label class="form-label">Quantite en stock</label>
+                        <input required type="number" name="quantite_en_stock" {% if article %}value="{{article.quantite_en_stock}}"{% endif %} class="form-control">
+                      </div>
+                      <div class="col-6">
+                        <label class="form-label">Prix unitaire</label>
+                        <input required type="number" name="prix_unitaire" {% if article %}value="{{article.prix_unitaire}}"{% endif %} class="form-control">
+                      </div>
+                      <div class="col-6">
+                        <label class="form-label">Categorie</label>
+                        <input required type="text" name="categorie" {% if article %}value="{{article.categorie}}"{% endif %} class="form-control">
+                      </div>
+                      
+                      <div class="col-12">
+                        <div class="d-grid">
+                          <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+             
+
+          </div>
+          <!-- end page content-->
+         </div>
+
+{% endblock content %}

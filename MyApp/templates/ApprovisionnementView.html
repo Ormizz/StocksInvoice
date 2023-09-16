@@ -1,0 +1,115 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- start page content wrapper-->
+<div class="page-content-wrapper">
+  <!-- start page content-->
+  <div class="page-content">
+
+    <!--start breadcrumb-->
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+      <div class="breadcrumb-title pe-3">Tables</div>
+      <div class="ps-3">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0 p-0 align-items-center">
+            <li class="breadcrumb-item"><a href="javascript:;"><ion-icon name="home-outline"></ion-icon></a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Data Table</li>
+          </ol>
+        </nav>
+      </div>
+      <div class="ms-auto">
+        <div class="btn-group">
+          <a href="{% url 'approvisionnement_list' %}" class="btn btn-outline-primary">Retour</a>
+        </div>
+      </div>
+    </div>
+    <!--end breadcrumb-->
+
+    <h6 class="text-uppercase">Details</h6>
+    <hr>
+    <div id="stepper1" class="bs-stepper">
+      <div class="card">
+      
+        <div class="card-header">
+          <div class="d-lg-flex flex-lg-row align-items-lg-center justify-content-lg-between" role="tablist">
+            {% if lignes %}
+            {% for ligne in lignes %}
+            {% with forloop.counter as num %}
+            {% if num == 1 %}
+            <div class="step" data-target="#test-l-1">
+              <div class="step-trigger" role="tab" id="stepper1trigger1" aria-controls="test-l-1">
+                <div class="bs-stepper-circle">1</div>
+                <div class="">
+                  <h5 class="mb-0 steper-title">{{ligne.article}}</h5>
+                </div>
+              </div>
+            </div>
+            {% else %}
+            <div class="bs-stepper-line"></div>
+            <div class="step" data-target="#test-l-{{num}}">
+              <div class="step-trigger" role="tab" id="stepper1trigger{{num}}" aria-controls="test-l-{{num}}">
+                <div class="bs-stepper-circle">{{num}}</div>
+                <div class="">
+                  <h5 class="mb-0 steper-title">{{ligne.article}}</h5>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+            {% endwith %}
+            {% endfor %}
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="bs-stepper-content">
+            {% if lignes %}
+            {% for ligne in lignes %}
+            {% with forloop.counter as num %}
+            <div id="test-l-{{num}}" role="tabpanel" class="bs-stepper-pane" aria-labelledby="stepper1trigger{{num}}">
+              <h5 class="mb-1">Details</h5>
+              <p class="mb-4">Details.</p>
+
+              <div class="row g-3">
+                <div class="col-12 col-lg-6">
+                  <label for="InputUsername" class="form-label">article</label>
+                  <input type="text" value="{{ligne.article}}" readonly class="form-control">
+                </div>
+                <div class="col-12 col-lg-6">
+                  <label for="InputEmail2" class="form-label">statut</label>
+                  <input type="text" value="{{ligne.statut}}" class="form-control" id="InputEmail2" readonly>
+                </div>
+                <div class="col-12 col-lg-6">
+                  <label for="InputPassword" class="form-label">quantite</label>
+                  <input type="number" value="{{ligne.quantite}}" class="form-control" readonly >
+                </div>
+                <div class="col-12 col-lg-6">
+                  <label for="InputPassword" class="form-label">prix_unitaire</label>
+                  <input type="number" value="{{ligne.prix_unitaire}}" readonly class="form-control" >
+                </div>
+                <div class="col-12 col-lg-6">
+                  <label for="InputPassword" class="form-label">montant_total_article</label>
+                  <input type="number" value="{{ligne.montant_total_article}}" readonly class="form-control">
+                </div>
+                <div class="col-12">
+                  <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-outline-secondary px-4" onclick="stepper1.previous()"><i class='bx bx-left-arrow-alt me-2'></i>Previous</button>
+                    <a href="{% url 'approvisionnement_confirm_details' ligne.pk %}">Effectuer</a>
+                    <button class="btn btn-primary px-4" onclick="stepper1.next()">Next<i class='bx bx-right-arrow-alt ms-2'></i></button>
+                  </div>
+                </div>
+              </div><!---end row-->
+            </div>
+            {% endwith %}
+            {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--end stepper one--> 
+    {% endif %}
+  </div>
+</div>
+
+{% endblock content %}

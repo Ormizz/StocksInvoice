@@ -1,0 +1,200 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+    <!-- start page content wrapper-->
+    <div class="page-content-wrapper">
+        <!-- start page content-->
+        <div class="page-content">
+            <!-- start breadcrumb-->
+            <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+                <div class="breadcrumb-title pe-3">Forms</div>
+                <!-- ... Autres éléments de breadcrumb ... -->
+            </div>
+            <div class="ms-auto">
+              <div class="btn-group">
+                <a href="{% url 'commande_client_list' %}" class="btn btn-outline-primary">Retour</a>
+              </div>
+            </div>
+            <!--end breadcrumb-->
+            <div class="row">
+                <div class="col-xl-12 mx-auto">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="border p-3 rounded">
+                                <h6 class="mb-0 text-uppercase">Enregistrer un approvisionnement</h6>
+                                <hr>
+                                <form class="row g-3" method="post" action="">
+                                    {% csrf_token %}
+                                    <div id="article-container">
+                                      <h5>Nouvelle ligne</h5>
+                                      <div class="row mt-3">
+                                        <div class="col-6">
+                                          <label class="form-label">Article</label>
+                                          <select class="form-select mb-3" name="article" aria-label="Default select example">
+                                            <option selected disabled>Article</option>
+                                            {% if articles %}
+                                            {% for article in articles %}
+                                            <option value="{{article.pk}}">{{article.nom}}</option>
+                                            {% endfor %}
+                                            {% else %}
+                                            Pas de articles
+                                            {% endif %}
+                                          </select>
+                                        </div>
+                                        <div class="col-6">
+                                          <label class="form-label">Quantite commandée</label>
+                                          <input required type="number" name="quantite" class="form-control quantite">
+                                        </div>
+                                        <div class="col-6">
+                                          <label class="form-label">Montant unitaire</label>
+                                          <input required type="number" name="prix_unitaire" class="form-control prix_unitaire">
+                                        </div>
+                                        <div class="col-6">
+                                          <label class="form-label">Montant total</label>
+                                          <input required type="number" readonly name="montant_total_article" readonly class="form-control montant_total_article">
+                                        </div>
+                                        <div class="col-12 mt-4">
+                                          <div class="input-group col-12"> <span class="input-group-text">Description</span>
+                                            <textarea class="form-control" name="description" aria-label="With textarea"></textarea>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="col-12">
+                                      <h6>Ajouter une ligne</h6>
+                                      <a id="ajouter-ligne">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" 
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                                        class="feather feather-file-plus"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
+                                        </path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12">
+                                        </line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+                                      </a>
+                                    </div>
+                                    <div class="col-6">
+                                      <label class="form-label">Montant total</label>
+                                      <input required type="number"  id="Totaux" name="montant_total" readonly class="form-control">
+                                    </div>
+                                    <div class="col-6">
+                                      <label class="form-label">Client</label>
+                                      <input required type="text" name="client" class="form-control">
+                                    </div>
+                                    <div>
+                                      <div class="col-12">
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        console.log("ok")
+        const container = document.getElementById('article-container');
+        const addButton = document.getElementById('ajouter-ligne');
+
+        addButton.addEventListener('click', function () {
+          // Créez un nouveau div pour la nouvelle ligne
+          const newDiv = document.createElement('div');
+          newDiv.classList.add('row');
+          newDiv.classList.add('mt-3');
+
+          // Ajoutez les éléments de formulaire à l'intérieur du nouveau div
+          newDiv.innerHTML = `
+            <h5>Nouvelle ligne</h5>
+            <div class="row mt-3">
+              <div class="col-6">
+                <label class="form-label">Article</label>
+                <select class="form-select mb-3" name="article" aria-label="Default select example">
+                  <option selected disabled>Article</option>
+                  {% if articles %}
+                  {% for article in articles %}
+                  <option value="{{article.pk}}">{{article.nom}}</option>
+                  {% endfor %}
+                  {% else %}
+                  Pas de articles
+                  {% endif %}
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Quantite commandée</label>
+                <input required type="number" name="quantite" class="form-control quantite">
+              </div>
+              <div class="col-6">
+                <label class="form-label">Montant unitaire</label>
+                <input required type="number" name="prix_unitaire" class="form-control prix_unitaire">
+              </div>
+              <div class="col-6">
+                <label class="form-label">Montant total</label>
+                <input required type="number" name="montant_total_article" readonly class="form-control montant_total_article">
+              </div>
+              <div class="col-12 mt-4">
+                <div class="input-group col-12"> <span class="input-group-text">Description</span>
+                  <textarea class="form-control" name="description" aria-label="With textarea"></textarea>
+                </div>
+              </div>
+            </div>
+          `;
+
+          // Ajoutez le nouveau div au conteneur
+          container.appendChild(newDiv);
+          calcul()
+          totaux()
+        });
+        calcul()
+        function calcul(){
+          const quantiteInputs = document.querySelectorAll('.quantite');
+          const prixUnitaireInputs = document.querySelectorAll('.prix_unitaire');
+          const montantTotalInputs = document.querySelectorAll('.montant_total_article');
+          prixUnitaireInputs.forEach(function (prixUnitaireInput, index) {
+            prixUnitaireInput.addEventListener('input', function () {
+              // Récupérez la valeur du prix unitaire entrée par l'utilisateur
+              const prixUnitaire = parseFloat(prixUnitaireInput.value);
+              
+              // Récupérez la quantité correspondante pour cette ligne
+              const quantite = parseFloat(quantiteInputs[index].value);
+              
+              // Vérifiez si le prix unitaire est un nombre valide
+              if (!isNaN(prixUnitaire)) {
+                // Calculez le montant total pour cette ligne
+                const montantTotal = prixUnitaire * quantite;
+                
+                // Mettez à jour le champ de montant total correspondant avec le résultat
+                montantTotalInputs[index].value = montantTotal.toFixed(2); // Arrondir à 2 décimales
+
+              } else {
+                // Si le prix unitaire n'est pas valide, réinitialisez le champ de montant total correspondant
+                montantTotalInputs[index].value = '';
+              }
+              totaux();
+            });
+          });
+        }
+        function totaux() {
+          const montantT = document.getElementById('Totaux');
+          const montantTotalInputs = document.querySelectorAll('.montant_total_article');
+          let totaux = 0;
+        
+          montantTotalInputs.forEach(function (montantTotalInput) {
+            const montantTotal = parseFloat(montantTotalInput.value);
+            
+            if (!isNaN(montantTotal)) {
+              totaux += montantTotal;
+            }
+          });
+        
+          montantT.value = totaux.toFixed(2); // Affiche le total général avec 2 décimales
+        }
+        
+        // Appelez la fonction totaux pour calculer le total au chargement de la page ou à tout autre moment nécessaire
+        totaux();
+      });
+    </script>
+{% endblock content %}

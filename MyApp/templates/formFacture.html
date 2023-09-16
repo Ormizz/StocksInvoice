@@ -1,0 +1,206 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+        <!-- start page content wrapper-->
+        <div class="page-content-wrapper">
+          <!-- start page content-->
+         <div class="page-content">
+
+          <!--start breadcrumb-->
+          <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">Forms</div>
+            <div class="ps-3">
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0 p-0 align-items-center">
+                  <li class="breadcrumb-item"><a href="javascript:;"><ion-icon name="home-outline"></ion-icon></a>
+                  </li>
+                  <li class="breadcrumb-item active" aria-current="page">Form Layouts</li>
+                </ol>
+              </nav>
+            </div>
+            <div class="ms-auto">
+              <div class="btn-group">
+                <a href="{% url 'facture_list' %}" class="btn btn-outline-primary">Retour</a>
+              </div>
+            </div>
+          </div>
+          <!--end breadcrumb-->
+            <div class="row">
+              <div class="col-xl-12 mx-auto">
+              
+                <div class="card">
+                  <div class="card-body">
+                    <div class="border p-3 rounded">
+                    <h6 class="mb-0 text-uppercase">Enregistrer un facture</h6>
+                    <hr>
+                    <form  class="row g-3" method="post" action="">
+                      {% csrf_token %}
+                      <div id="article-container">
+                        <h5>Nouvelle ligne</h5>
+                        <div class="row mt-3">
+                          <div class="col-6">
+                            <label class="form-label">Libelle de l'article</label>
+                            <input required type="text" name="article" class="form-control">
+                          </div>
+                          <div class="col-6">
+                            <label class="form-label">Quantite commandée</label>
+                            <input required type="number" name="quantite_vendue" class="form-control quantite_vendue">
+                          </div>
+                          <div class="col-6">
+                            <label class="form-label">Montant unitaire</label>
+                            <input required type="number" name="prix_unitaire_vente" class="form-control prix_unitaire_vente">
+                          </div>
+                          <div class="col-6">
+                            <label class="form-label">Montant total</label>
+                            <input required type="number" name="montant_total_article" readonly class="form-control montant_total_article">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <h6>Ajouter une ligne</h6>
+                        <a id="ajouter-ligne">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" 
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                          class="feather feather-file-plus"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
+                          </path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12">
+                          </line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+                        </a>
+                      </div>
+                      <div>
+                        <h5>Total</h5>
+                        <div class="row mt-3">
+                          <div class="col-6">
+                            <label class="form-label">Numero de facture</label>
+                            <input required type="text" {% if last_num %} value="{{last_num}}" {% endif %} name="numero_facture" readonly class="form-control">
+                          </div>
+                          <div class="col-6">
+                            <label class="form-label">Date de facturation</label>
+                            <p id="dateAujDisplay" class="form-control"></p>
+                            <input required type="date" id="dateAuj" readonly  name="date_facturation" style="display: none;">
+                          </div>
+                          <div class="col-6">
+                            <label class="form-label">Client</label>
+                            <input required type="text" name="client" class="form-control">
+                          </div>
+                          <div class="col-6">
+                            <label class="form-label">Montant total</label>
+                            <input required type="number"  id="Totaux" name="montant_total" readonly class="form-control">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <div class="d-grid">
+                          <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+             
+
+          </div>
+          <!-- end page content-->
+         </div>
+
+         <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            console.log("ok")
+            const container = document.getElementById('article-container');
+            const addButton = document.getElementById('ajouter-ligne');
+            const aujourdDisplay = document.getElementById('dateAujDisplay');
+            const aujourdInput = document.getElementById('dateAuj');
+
+            const today = new Date();
+            const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+            const formattedDate = today.toLocaleDateString('fr-FR', options);
+
+            aujourdDisplay.textContent = formattedDate; // Affiche la date dans l'élément d'affichage
+            aujourdInput.value = formattedDate; // 
+
+            addButton.addEventListener('click', function () {
+              // Créez un nouveau div pour la nouvelle ligne
+              const newDiv = document.createElement('div');
+              newDiv.classList.add('row');
+              newDiv.classList.add('mt-3');
+  
+              // Ajoutez les éléments de formulaire à l'intérieur du nouveau div
+              newDiv.innerHTML = `
+                <h5>Nouvelle ligne</h5>
+                <div class="col-6">
+                  <label class="form-label">Libelle de l'article</label>
+                  <input required type="text" name="article" class="form-control">
+                </div>
+                <div class="col-6">
+                  <label class="form-label">Quantite commandée</label>
+                  <input required type="number" name="quantite_vendue" class="form-control quantite_vendue">
+                </div>
+                <div class="col-6">
+                  <label class="form-label">Montant unitaire</label>
+                  <input required type="number" name="prix_unitaire_vente" class="form-control prix_unitaire_vente">
+                </div>
+                <div class="col-6">
+                  <label class="form-label">Montant total</label>
+                  <input required type="number" name="montant_total_article" readonly class="form-control montant_total_article">
+                </div>
+              `;
+  
+              // Ajoutez le nouveau div au conteneur
+              container.appendChild(newDiv);
+              calcul()
+              totaux()
+            });
+            calcul()
+            function calcul(){
+              const prixUnitaireInputs = document.querySelectorAll('.prix_unitaire_vente');
+              const montantTotalInputs = document.querySelectorAll('.montant_total_article');
+              const quantiteInputs = document.querySelectorAll('.quantite_vendue');
+              prixUnitaireInputs.forEach(function (prixUnitaireInput, index) {
+                prixUnitaireInput.addEventListener('input', function () {
+                  // Récupérez la valeur du prix unitaire entrée par l'utilisateur
+                  const prixUnitaire = parseFloat(prixUnitaireInput.value);
+                  
+                  // Récupérez la quantité correspondante pour cette ligne
+                  const quantite = parseFloat(quantiteInputs[index].value);
+                  
+                  // Vérifiez si le prix unitaire est un nombre valide
+                  if (!isNaN(prixUnitaire)) {
+                    // Calculez le montant total pour cette ligne
+                    const montantTotal = prixUnitaire * quantite;
+                    
+                    // Mettez à jour le champ de montant total correspondant avec le résultat
+                    montantTotalInputs[index].value = montantTotal.toFixed(2); // Arrondir à 2 décimales
+
+                  } else {
+                    // Si le prix unitaire n'est pas valide, réinitialisez le champ de montant total correspondant
+                    montantTotalInputs[index].value = '';
+                  }
+                  totaux();
+                });
+              });
+            }
+            function totaux() {
+              const montantT = document.getElementById('Totaux');
+              const montantTotalInputs = document.querySelectorAll('.montant_total_article');
+              let totaux = 0;
+            
+              montantTotalInputs.forEach(function (montantTotalInput) {
+                const montantTotal = parseFloat(montantTotalInput.value);
+                
+                if (!isNaN(montantTotal)) {
+                  totaux += montantTotal;
+                }
+              });
+            
+              montantT.value = totaux.toFixed(2); // Affiche le total général avec 2 décimales
+            }
+            
+            // Appelez la fonction totaux pour calculer le total au chargement de la page ou à tout autre moment nécessaire
+            totaux();
+          });
+        </script>
+      
+{% endblock content %}
