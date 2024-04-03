@@ -33,6 +33,7 @@ urlpatterns = [
     path('facture/<int:pk>/', views.facture_edit, name='facture_edit'),
     path('facture/<int:pk>/delete/', views.facture_delete, name='facture_delete'),
     path('facture/view/<int:pk>/', views.facture_view, name='facture_view'),
+    path('facture/viewM/<int:pk>/', views.factureM_view, name='factureM_view'),
     
     ######################################################################################
 
@@ -68,6 +69,6 @@ urlpatterns = [
     
     path('auth/', views.auth, name="auth"),
     path('logout/', views.deconnexion, name="logout"),
-    path('pdf_download/<int:pk>/', views.render_pdf_view, name="pdf_download"),
+    # path('pdf_download/<int:pk>/', views.render_pdf_view, name="pdf_download"),
     
 ]

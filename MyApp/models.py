@@ -44,7 +44,7 @@ class Facture(models.Model):
 class DetailFacture(models.Model):
     facture = models.ForeignKey(Facture, on_delete=models.CASCADE)
     # article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    article = models.CharField(max_length=255, unique=True)
+    article = models.CharField(max_length=255)
     quantite_vendue = models.PositiveIntegerField()
     prix_unitaire_vente = models.DecimalField(max_digits=20, decimal_places=2)
     montant_total_article = models.DecimalField(max_digits=20, decimal_places=2)

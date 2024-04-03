@@ -3,3 +3,4 @@ num2words
 xhtml2pdf
 pdfkit
 django-pdfkit
+pymysql

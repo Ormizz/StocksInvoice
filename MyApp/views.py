@@ -1,16 +1,12 @@
 import datetime
 from django.shortcuts import render, redirect, get_object_or_404
-from num2words import num2words
-from io import BytesIO
-from django.http import HttpResponse
 from django.template.loader import get_template
 from django.views import View
-from xhtml2pdf import pisa 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
-import pdfkit
 from django.contrib import messages
+from num2words import num2words
 
 from .models import *
 
@@ -147,9 +143,9 @@ def fournisseur_delete(request, pk):
     else:
         return render(request, 'Fournisseurs.html', {'fournisseur': fournisseur})
     
-########################################################################################################
-#Client Part
-########################################################################################################
+#######################################################################################################
+# Client Part
+#######################################################################################################
 
 def client_list(request):
     clients = Client.objects.all()
@@ -204,13 +200,21 @@ def client_delete(request, pk):
 def facture_create(request):
     try:
         derniere_facture = Facture.objects.last()
-        num = int(derniere_facture.numero_facture)
+        lastnum = derniere_facture.numero_facture.split("-")
+        print(lastnum)
+        num = str(int(lastnum[1])+1).zfill(4) 
     except Facture.DoesNotExist:
         num = 1
+    # except:
+    #     num=1
     if request.method == 'POST':
         # Récupérez les données du formulaire de facture
         client = request.POST['client']
-        num=num+1
+        num=str(int(num)).zfill(4) #Formatage avec 4 chiffres
+        # Obtenir l'année actuelle
+        current_year = datetime.datetime.now().year
+        # Obtenir les deux derniers chiffres de l'année
+        num = str(current_year)[-2:]+"-"+num
         today = datetime.date.today()
 
         # dd/mm/YY
@@ -294,10 +298,19 @@ def facture_list(request):
     factures = Facture.objects.all()
     return render(request, 'Facture.html', {'factures': factures})
 
+def separate_milliers(nombre):
+    nombre_str = str(nombre)
+    result = ''.join([' ' + ch if i > 0 and (len(nombre_str) - i) % 3 == 0 else ch for i, ch in enumerate(nombre_str)])
+    return result
+
+
+
 def facture_view(request, pk):
     facture = Facture.objects.get(pk=pk)
     if facture.montant_total:
-            facture.montant_total = int(facture.montant_total)
+            toLetter = num2words(facture.montant_total, lang='fr')
+            facture.montant_total = separate_milliers(int(facture.montant_total))
+            facture.date_facturation = facture.date_facturation.strftime("%d-%m-%Y")
             
     all_line = DetailFacture.objects.filter(facture=facture)
 
@@ -305,18 +318,49 @@ def facture_view(request, pk):
     for line in all_line:
         # Assurez-vous que les champs numériques ne sont pas vides avant de les convertir
         if line.prix_unitaire_vente:
-            line.prix_unitaire_vente = int(line.prix_unitaire_vente)
+            line.prix_unitaire_vente = separate_milliers(int(line.prix_unitaire_vente))
         
         if line.quantite_vendue:
-            line.quantite_vendue = int(line.quantite_vendue)
+            line.quantite_vendue = separate_milliers(int(line.quantite_vendue))
         
         if line.montant_total_article:
-            line.montant_total_article = int(line.montant_total_article)
+            line.montant_total_article = separate_milliers(int(line.montant_total_article))
 
     # Vous pouvez ensuite utiliser la liste mise à jour
 
-    toLetter = num2words(facture.montant_total, lang='fr')
+    
     return render(request, 'InvoiceModel.html', {
+        'facture': facture,
+        'all_line' : all_line,
+        'toLetter' : toLetter,
+        })
+    
+
+def factureM_view(request, pk):
+    facture = Facture.objects.get(pk=pk)
+    if facture.montant_total:
+            toLetter = num2words(facture.montant_total, lang='fr')
+            facture.montant_total = separate_milliers(int(facture.montant_total))
+            facture.date_facturation = facture.date_facturation.strftime("%d-%m-%Y")
+            
+    all_line = DetailFacture.objects.filter(facture=facture)
+
+    # Parcourir chaque élément de la liste et convertir les champs numériques en entiers
+    for line in all_line:
+        # Assurez-vous que les champs numériques ne sont pas vides avant de les convertir
+        if line.prix_unitaire_vente:
+            line.prix_unitaire_vente = separate_milliers(int(line.prix_unitaire_vente))
+        
+        if line.quantite_vendue:
+            line.quantite_vendue = separate_milliers(int(line.quantite_vendue))
+        
+        if line.montant_total_article:
+            line.montant_total_article = separate_milliers(int(line.montant_total_article))
+
+    # Vous pouvez ensuite utiliser la liste mise à jour
+
+    
+    return render(request, 'FactureModel.html', {
         'facture': facture,
         'all_line' : all_line,
         'toLetter' : toLetter,
@@ -601,80 +645,80 @@ def deconnexion(request):
 	logout(request)
 	return redirect("index")
 
-import os
-from django.conf import settings
-from django.contrib.staticfiles import finders
+# import os
+# from django.conf import settings
+# from django.contrib.staticfiles import finders
 
-def link_callback(uri, rel):
-    """
-    Convert HTML URIs to absolute system paths so xhtml2pdf can access those
-    resources
-    """
+# def link_callback(uri, rel):
+#     """
+#     Convert HTML URIs to absolute system paths so xhtml2pdf can access those
+#     resources
+#     """
     
-    # Assurez-vous que l'URI pointe vers le bon chemin du fichier CSS
+#     # Assurez-vous que l'URI pointe vers le bon chemin du fichier CSS
     
-    if uri == 'static/assetsInvoice/css/style.css':
-        path = os.path.join(settings.BASE_DIR, 'MyApp/static', uri)
-        print(path)
-        return path
+#     if uri == 'static/assetsInvoice/css/style.css':
+#         path = os.path.join(settings.BASE_DIR, 'MyApp/static', uri)
+#         print(path)
+#         return path
 
-    result = finders.find(uri)
-    # Le reste du code reste inchangé
-    if result:
-        if not isinstance(result, (list, tuple)):
-            result = [result]
-        result = list(os.path.realpath(path) for path in result)
-        path = result[0]
-    else:
-        sUrl = settings.STATIC_URL
-        sRoot = settings.STATIC_ROOT
-        mUrl = settings.MEDIA_URL
-        mRoot = settings.MEDIA_ROOT
+#     result = finders.find(uri)
+#     # Le reste du code reste inchangé
+#     if result:
+#         if not isinstance(result, (list, tuple)):
+#             result = [result]
+#         result = list(os.path.realpath(path) for path in result)
+#         path = result[0]
+#     else:
+#         sUrl = settings.STATIC_URL
+#         sRoot = settings.STATIC_ROOT
+#         mUrl = settings.MEDIA_URL
+#         mRoot = settings.MEDIA_ROOT
 
-        if uri.startswith(mUrl):
-            path = os.path.join(mRoot, uri.replace(mUrl, ""))
-        elif uri.startswith(sUrl):
-            path = os.path.join(sRoot, uri.replace(sUrl, ""))
-        else:
-            return uri
+#         if uri.startswith(mUrl):
+#             path = os.path.join(mRoot, uri.replace(mUrl, ""))
+#         elif uri.startswith(sUrl):
+#             path = os.path.join(sRoot, uri.replace(sUrl, ""))
+#         else:
+#             return uri
 
-    if not os.path.isfile(path):
-        raise Exception('media URI must start with %s or %s' % (sUrl, mUrl))
+#     if not os.path.isfile(path):
+#         raise Exception('media URI must start with %s or %s' % (sUrl, mUrl))
 
-    return path
+#     return path
 
 
-# url(r'^my-pdf/$', PDFView.as_view(template_name='my-pdf.html'), name='my-pdf'),
+# # url(r'^my-pdf/$', PDFView.as_view(template_name='my-pdf.html'), name='my-pdf'),
 
-def topdf(request):
+# def topdf(request):
 
     
-    pdfkit.from_file('test.html', 'out.pdf')
-    pdfkit.from_string('Hello!', 'out.pdf')      
+#     pdfkit.from_file('test.html', 'out.pdf')
+#     pdfkit.from_string('Hello!', 'out.pdf')      
     
-    pdf = pdfkit.from_url('' , 'out.pdf')
+#     pdf = pdfkit.from_url('' , 'out.pdf')
         
-def render_pdf_view(request, pk):
-    facture = Facture.objects.get(pk=pk)
-    all_line = DetailFacture.objects.filter(facture=facture)
-    toLetter = num2words(facture.montant_total, lang='fr')
-    template_path = 'InvoiceModel.html'
-    context = {
-        'facture': facture,
-        'all_line' : all_line,
-        'toLetter' : toLetter,
-    }
-    # Create a Django response object, and specify content_type as pdf
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
-    # find the template and render it.
-    template = get_template(template_path)
-    html = template.render(context)
+# def render_pdf_view(request, pk):
+#     facture = Facture.objects.get(pk=pk)
+#     all_line = DetailFacture.objects.filter(facture=facture)
+#     toLetter = num2words(facture.montant_total, lang='fr')
+#     template_path = 'InvoiceModel.html'
+#     context = {
+#         'facture': facture,
+#         'all_line' : all_line,
+#         'toLetter' : toLetter,
+#     }
+#     # Create a Django response object, and specify content_type as pdf
+#     response = HttpResponse(content_type='application/pdf')
+#     response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+#     # find the template and render it.
+#     template = get_template(template_path)
+#     html = template.render(context)
 
-    # create a pdf
-    pisa_status = pisa.CreatePDF(
-       html, dest=response, link_callback=link_callback)
-    # if error then show some funny view
-    if pisa_status.err:
-       return HttpResponse('We had some errors <pre>' + html + '</pre>')
-    return response
+#     # create a pdf
+#     pisa_status = pisa.CreatePDF(
+#        html, dest=response, link_callback=link_callback)
+#     # if error then show some funny view
+#     if pisa_status.err:
+#        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+#     return response

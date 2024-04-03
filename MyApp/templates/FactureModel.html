@@ -1,0 +1,199 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="no-js" lang="fr">
+
+<head>
+  <!-- Meta Tags -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="">
+  <!-- Site Title -->
+  <title>Facture {{facture.client}}</title>
+  <link rel="stylesheet" href="{% static 'assetsInvoice/css/style.css' %}">
+  <style>
+    #tableau {
+      /* width:200px; */
+      table-layout:fixed;
+    }
+    /* td {
+      word-wrap:break-word;
+    } */
+    @media print {
+      body {
+        font-size: 80%;
+      }
+      img {
+        max-width: 100%; /* Assurez-vous que les images ne dépassent pas la largeur de leur conteneur */
+      }
+      .tm_hide_print {
+        display: none;
+      }
+      .footer {
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+          background-color: #f8f8f8; /* Couleur de fond de votre choix */
+          /* padding: 15px; Espace intérieur pour le contenu */
+          /* margin-left: -30px; Espace intérieur pour le contenu */
+          text-align: center; /* Pour centrer le contenu horizontalement */
+      }
+      @page {
+        margin: 0.5cm 0.5cm 0.5cm 0.5cm; /* Vous pouvez utiliser cm, mm, in, pt, etc. */
+    }
+    
+    /* Styles pour le contenu imprimé */
+    body {
+        margin: 0; /* Réinitialiser les marges du corps */
+        padding: 0; /* Réinitialiser le rembourrage du corps */
+    }
+  }
+
+  </style>
+</head>
+
+<body>
+  <div class="tm_container">
+    <div class="tm_invoice_wrap">
+      <div class="tm_invoice tm_style1" id="tm_download_section">
+        <div class="tm_invoice_in">
+          <div class="tm_invoice_head tm_align_center tm_mb20">
+            <div class="tm_invoice_left">
+             
+            </div>
+            <div class="tm_invoice_right tm_text_right">
+              <div style="margin-bottom: 50px; margin-left: -500px;" class="tm_primary_color tm_f50 tm_text_uppercase">Facture</div>
+            </div>
+          </div>
+          <div class="tm_invoice_head tm_mb10" style="margin-top:-30px;">
+            
+            <div class="tm_invoice_left">
+              
+            </div>
+            <div class="tm_invoice_right tm_text_left" style="padding-left:175px">
+              <br>
+              <p class="tm_mb2"><b class="tm_primary_color">adressée à:</b></p>
+              <div style="word-wrap: break-word;">
+                {{facture.client}} <br>
+                {{facture.client.adresse}} <br>
+                {{facture.client.email}}
+              </div>
+            </div>
+          </div>
+          <div class="tm_table tm_style1 tm_mb30">
+            <div class="tm_round_border">
+              <div class="tm_table_responsive">
+                <table id='tableau'>
+                  <thead>
+                    <tr>
+                      <th style="width: 140px;" class="tm_width_3 tm_semi_bold tm_primary_color tm_gray_bg">DESIGNATION</th>
+                      <th style="width: 10px;" class="tm_width_2 tm_semi_bold tm_primary_color tm_gray_bg">PU</th>
+                      <th style="width: 10px;" class="tm_width_1 tm_semi_bold tm_primary_color tm_gray_bg">QTE</th>
+                      <th style="width: 20px;" class="tm_width_2 tm_semi_bold tm_primary_color tm_gray_bg tm_text_right">TOTAL</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% if all_line %}
+                    {% for line in all_line %}
+                    <tr>
+                     <div style="word-wrap: break-word;"><td style="word-wrap:break-word;">{{line.article}}</td></div>
+                      <td class="tm_width_2"><div style="overflow-wrap: break-word;">{{line.prix_unitaire_vente}}</div></td>
+                      <td class="tm_width_1"><div style="overflow-wrap: break-word;">{{line.quantite_vendue}}</div></td>
+                      <td class="tm_width_2 tm_text_right"><div style="overflow-wrap: break-word;">{{line.montant_total_article}}</div></td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                      <td colspan="4">Erreur</td>
+                    </tr>
+                    {% endif %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <div class="tm_invoice_footer">
+              <div class="tm_left_footer">
+                
+              </div>
+              <div class="tm_right_footer">
+                <table>
+                  <tbody>
+                    {% comment %} <tr>
+                      <td class="tm_width_3 tm_primary_color tm_border_none tm_bold">Subtoal</td>
+                      <td class="tm_width_3 tm_primary_color tm_text_right tm_border_none tm_bold">$1650</td>
+                    </tr>
+                    <tr>
+                      <td class="tm_width_3 tm_primary_color tm_border_none tm_pt0">Tax <span class="tm_ternary_color">(5%)</span></td>
+                      <td class="tm_width_3 tm_primary_color tm_text_right tm_border_none tm_pt0">+$82</td>
+                    </tr> {% endcomment %}
+                    <tr class="tm_border_top tm_border_bottom">
+                      <td class="tm_width_3 tm_border_top_0 tm_bold tm_f16 tm_primary_color">Net à payer	</td>
+                      <td class="tm_width_3 tm_border_top_0 tm_bold tm_f16 tm_primary_color tm_text_right">{{facture.montant_total}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <br>
+            <div class="tm_left_footer">
+              <p class="tm_mb2">Arrêté la présente facture à la somme de <b class="tm_primary_color">{{toLetter}}</b> CFA.</p>
+              <p class="tm_m0"></p>
+            </div>
+            <br>
+            <div class="tm_invoice_footer tm_type1">
+              <div class="tm_left_footer"></div>
+              <div class="tm_right_footer">
+                <div class=" tm_text_center">
+                  {% comment %} <p class="tm_m0 tm_ternary_color">FCS Technologies</p> {% endcomment %}
+                  <br>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      <div class="tm_invoice_btns tm_hide_print">
+        <a href="javascript:window.print()" class="tm_invoice_btn tm_color1">
+          <span class="tm_btn_icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path d="M384 368h24a40.12 40.12 0 0040-40V168a40.12 40.12 0 00-40-40H104a40.12 40.12 0 00-40 40v160a40.12 40.12 0 0040 40h24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/><rect x="128" y="240" width="256" height="208" rx="24.32" ry="24.32" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/><path d="M384 128v-24a40.12 40.12 0 00-40-40H168a40.12 40.12 0 00-40 40v24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/><circle cx="392" cy="184" r="24" fill='currentColor'/></svg>
+          </span>
+          <span class="tm_btn_text">Print</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/jspdf.min.js"></script>
+  <script src="assets/js/html2canvas.min.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    function ajusterLargeurCellules() {
+        const tableau = document.getElementById('tableau');
+        const lignes = tableau.getElementsByTagName('tr');
+
+        for (const ligne of lignes) {
+            const cellules = ligne.getElementsByTagName('td');
+
+            for (const cellule of cellules) {
+                cellule.style.width = 'auto'; // Réinitialiser la largeur
+
+                // Utiliser la largeur maximale trouvée dans la ligne
+                const largeurMax = Array.from(cellules).reduce((max, cell) => {
+                    const largeurCellule = cell.offsetWidth;
+                    return largeurCellule > max ? largeurCellule : max;
+                }, 0);
+
+                cellule.style.width = largeurMax + 'px';
+            }
+        }
+    }
+
+    // Appelez la fonction lors du chargement de la page et en cas de redimensionnement de la fenêtre
+    window.onload = ajusterLargeurCellules;
+    window.addEventListener('resize', ajusterLargeurCellules);
+</script>
+</body>
+</html>

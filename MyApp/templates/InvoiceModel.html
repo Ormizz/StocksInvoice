@@ -12,18 +12,34 @@
   <title>Proforma {{facture.client}}</title>
   <link rel="stylesheet" href="{% static 'assetsInvoice/css/style.css' %}">
   <style>
+    #tableau {
+      /* width:200px; */
+      table-layout:fixed;
+    }
+    /* td {
+      word-wrap:break-word;
+    } */
     @media print {
+      body {
+        font-size: 80%;
+      }
+      img {
+        max-width: 100%; /* Assurez-vous que les images ne dépassent pas la largeur de leur conteneur */
+      }
+      .tm_hide_print {
+        display: none;
+      }
       .footer {
           position: fixed;
           bottom: 0;
           width: 100%;
           background-color: #f8f8f8; /* Couleur de fond de votre choix */
-          padding: 15px; /* Espace intérieur pour le contenu */
-          margin-left: -30px; /* Espace intérieur pour le contenu */
+          /* padding: 15px; Espace intérieur pour le contenu */
+          /* margin-left: -30px; Espace intérieur pour le contenu */
           text-align: center; /* Pour centrer le contenu horizontalement */
       }
       @page {
-        margin: 2cm; /* Vous pouvez utiliser cm, mm, in, pt, etc. */
+        margin: 0.5cm 0.5cm 0.5cm 0.5cm; /* Vous pouvez utiliser cm, mm, in, pt, etc. */
     }
     
     /* Styles pour le contenu imprimé */
@@ -73,7 +89,7 @@
             <div class="tm_invoice_right tm_text_left" style="padding-left:175px">
               <p class="tm_invoice_number tm_m0">PROFORMA: N°<b class="tm_primary_color">{{facture.numero_facture}}</b></p>
               <br>
-              <p class="tm_mb2"><b class="tm_primary_color">Adressé à:</b></p>
+              <p class="tm_mb2"><b class="tm_primary_color">adressée à:</b></p>
               <div style="word-wrap: break-word;">
                 {{facture.client}} <br>
                 {{facture.client.adresse}} <br>
@@ -87,9 +103,9 @@
                 <table id='tableau'>
                   <thead>
                     <tr>
-                      <th class="tm_width_3 tm_semi_bold tm_primary_color tm_gray_bg">DESIGNATION</th>
-                      <th class="tm_width_2 tm_semi_bold tm_primary_color tm_gray_bg">PRIX UNITAIRE</th>
-                      <th class="tm_width_1 tm_semi_bold tm_primary_color tm_gray_bg">QUANTITE</th>
+                      <th style="width: 120px;" class="tm_width_3 tm_semi_bold tm_primary_color tm_gray_bg">DESIGNATION</th>
+                      <th style="width: 10px;" class="tm_width_2 tm_semi_bold tm_primary_color tm_gray_bg">PU</th>
+                      <th style="width: 10px;" class="tm_width_1 tm_semi_bold tm_primary_color tm_gray_bg">QTE</th>
                       <th class="tm_width_2 tm_semi_bold tm_primary_color tm_gray_bg tm_text_right">TOTAL</th>
                     </tr>
                   </thead>
@@ -97,7 +113,7 @@
                     {% if all_line %}
                     {% for line in all_line %}
                     <tr>
-                     <div style="word-wrap: break-word;"><td class="">{{line.article}}</td></div>
+                     <div style="word-wrap: break-word;"><td style="word-wrap:break-word;">{{line.article}}</td></div>
                       <td class="tm_width_2"><div style="overflow-wrap: break-word;">{{line.prix_unitaire_vente}}</div></td>
                       <td class="tm_width_1"><div style="overflow-wrap: break-word;">{{line.quantite_vendue}}</div></td>
                       <td class="tm_width_2 tm_text_right"><div style="overflow-wrap: break-word;">{{line.montant_total_article}}</div></td>
@@ -147,9 +163,9 @@
               <div class="tm_right_footer">
                 <div class=" tm_text_center">
                   {% comment %} <p class="tm_m0 tm_ternary_color">FCS Technologies</p> {% endcomment %}
-                  <br><br><br><br>
+                  <br>
                   <p class="tm_m0 tm_f16 tm_primary_color">Le service commercial</p>
-                  <img style="height:100px; width:200px" src="{% static 'assets/images/Sign.png' %}" alt="Sign">
+                  <img style="height:100px; width:200px;" src="{% static 'assets/images/Sign.png' %}" alt="Sign">
                 </div>
               </div>
             </div>
@@ -157,7 +173,7 @@
           <div class="tm_padd_15_20 tm_round_border footer" style="text-align:center; padding-top:15px; padding-right:0px; padding-left:0px; padding-bottom:15px ">
             <p class="tm_mb5"><b class="tm_primary_color"></b></p>
             <ul class="tm_m0 tm_note_list" style="list-style-type:none">
-              <li>Siège social: Ferké qt Saint Paul – 21 BP 2068 Abidjan 21 – Tel: +225 0101010105 - Cel: +225&nbsp;0759712260 &nbsp;  </li>
+              <li>Siège social: Ferké qt Saint Paul – 21 BP 2068 Abidjan 21 - Cel: +225&nbsp;0759712260 &nbsp;  </li>
               <li>E-mail: infos@fcs-technologies.com</li>
               <li>RC: CI-YOP-2009-A-1382 – Compte bancaire: ORABANK Plateau CI121 01301 030695707001 – 94</li>
             </ul>
@@ -171,12 +187,12 @@
           </span>
           <span class="tm_btn_text">Print</span>
         </a>
-        {% comment %} <a href="{% url 'pdf_download' facture.pk %}" id="tm_download_btn" class="tm_invoice_btn tm_color2">
+        <a href="{% url 'factureM_view' facture.pk %}" id="tm_download_btn" class="tm_invoice_btn tm_color2">
           <span class="tm_btn_icon">
             <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path d="M320 336h76c55 0 100-21.21 100-75.6s-53-73.47-96-75.6C391.11 99.74 329 48 256 48c-69 0-113.44 45.79-128 91.2-60 5.7-112 35.88-112 98.4S70 336 136 336h56M192 400.1l64 63.9 64-63.9M256 224v224.03" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></svg>
           </span>
           <span class="tm_btn_text">Download</span>
-        </a> {% endcomment %}
+        </a>
       </div>
     </div>
   </div>
