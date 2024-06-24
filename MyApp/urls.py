@@ -34,6 +34,7 @@ urlpatterns = [
     path('facture/<int:pk>/delete/', views.facture_delete, name='facture_delete'),
     path('facture/view/<int:pk>/', views.facture_view, name='facture_view'),
     path('facture/viewM/<int:pk>/', views.factureM_view, name='factureM_view'),
+    path('facture/viewM/<int:pk>/', views.facture_confirm, name='factureM_view'),
     
     ######################################################################################
 

@@ -41,6 +41,7 @@
                       <th>date de facturation</th>
                       <th>montant total</th>
                       <th>client</th>
+                      <th>Status</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -52,8 +53,10 @@
                       <td>{{facture.date_facturation}}</td>
                       <td>{{facture.montant_total}}</td>
                       <td>{{facture.client}}</td>
+                      <td>{{facture.status}}</td>
                       <td>
                         <a class="me-3" href="{% url 'facture_view' facture.pk %}"><i class="fadeIn animated bx bx-pencil">Imprimer</i></a>
+                        <a class="me-3" href="{% url 'facture_view' facture.pk %}"><i class="fadeIn animated bx bx-pencil">Confirmer</i></a>
                       </td>
                     </tr>
                     {% endfor %}

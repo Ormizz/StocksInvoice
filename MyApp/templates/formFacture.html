@@ -37,10 +37,14 @@
                       {% csrf_token %}
                       <div id="article-container">
                         <h5>Nouvelle ligne</h5>
+                        <input type="checkbox" name="instock" id="instock">
+                        <label for="instock">En stock</label>
                         <div class="row mt-3">
                           <div class="col-6">
                             <label class="form-label">Libelle de l'article</label>
-                            <input required type="text" name="article" class="form-control">
+                            <div id="articleInputContainer">
+                              <input required type="text" name="article" id="libArticle" class="form-control">
+                            </div>
                           </div>
                           <div class="col-6">
                             <label class="form-label">Quantite commandée</label>
@@ -113,6 +117,7 @@
             const addButton = document.getElementById('ajouter-ligne');
             const aujourdDisplay = document.getElementById('dateAujDisplay');
             const aujourdInput = document.getElementById('dateAuj');
+            const instockCheckbox = document.getElementById('instock');
 
             const today = new Date();
             const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
@@ -132,7 +137,7 @@
                 <h5>Nouvelle ligne</h5>
                 <div class="col-6">
                   <label class="form-label">Libelle de l'article</label>
-                  <input required type="text" name="article" class="form-control">
+                  <input required type="text" name="article" id="libArticle" class="form-control">
                 </div>
                 <div class="col-6">
                   <label class="form-label">Quantite commandée</label>
@@ -153,6 +158,41 @@
               calcul()
               totaux()
             });
+
+            instockCheckbox.addEventListener('change', function () {
+              const articleInputContainer = document.getElementById('articleInputContainer');
+              console.log('in')
+              if (this.checked) {
+                  // Si en stock est coché, remplacez l'élément input par un select
+                  const selectElement = document.createElement('select');
+                  selectElement.setAttribute('name', 'article');
+                  selectElement.setAttribute('id', 'libArticle');
+                  selectElement.classList.add('form-control');
+                  console.log('in')
+                  // Ajoutez des options à votre select
+                  // Par exemple:
+                  const option1 = document.createElement('option');
+                  option1.value = 'option1_value';
+                  option1.textContent = 'Option 1';
+                  selectElement.appendChild(option1);
+
+                  // Remplacez l'élément input par le select nouvellement créé
+                  articleInputContainer.innerHTML = '';
+                  articleInputContainer.appendChild(selectElement);
+              } else {
+                  // Si en stock n'est pas coché, remplacez le select par l'élément input
+                  const inputElement = document.createElement('input');
+                  inputElement.setAttribute('type', 'text');
+                  inputElement.setAttribute('name', 'article');
+                  inputElement.setAttribute('id', 'libArticle');
+                  inputElement.classList.add('form-control');
+
+                  // Remplacez l'élément select par l'input nouvellement créé
+                  articleInputContainer.innerHTML = '';
+                  articleInputContainer.appendChild(inputElement);
+              }
+            });
+
             calcul()
             function calcul(){
               const prixUnitaireInputs = document.querySelectorAll('.prix_unitaire_vente');

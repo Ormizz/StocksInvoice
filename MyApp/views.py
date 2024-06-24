@@ -203,6 +203,7 @@ def facture_create(request):
         lastnum = derniere_facture.numero_facture.split("-")
         print(lastnum)
         num = str(int(lastnum[1])+1).zfill(4) 
+
     except Facture.DoesNotExist:
         num = 1
     # except:
@@ -290,6 +291,16 @@ def facture_delete(request, pk):
         facture.details_facture.all().delete()
         # Puis supprimer la facture elle-même
         facture.delete()
+        return redirect('facture_list')
+    
+def facture_confirm(request, pk):
+    facture = get_object_or_404(Facture, pk=pk)
+    
+    if request.method == 'POST':
+        #avoir la liste des articles en stock
+        for instock in facture.details_facture:
+            pass
+        facture.status = "Confirmé"
         return redirect('facture_list')
     
     return render(request, 'Facture.html', {'facture': facture})
@@ -722,3 +733,4 @@ def deconnexion(request):
 #     if pisa_status.err:
 #        return HttpResponse('We had some errors <pre>' + html + '</pre>')
 #     return response
+

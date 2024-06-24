@@ -37,6 +37,7 @@ class Facture(models.Model):
     date_facturation = models.DateField()
     montant_total = models.DecimalField(max_digits=20, decimal_places=2)
     client = models.CharField(max_length=255, default="")
+    status = models.CharField(max_length=255, default="Attente", null=True, blank=True)
 
     def __str__(self):
         return self.numero_facture
@@ -45,6 +46,7 @@ class DetailFacture(models.Model):
     facture = models.ForeignKey(Facture, on_delete=models.CASCADE)
     # article = models.ForeignKey(Article, on_delete=models.CASCADE)
     article = models.CharField(max_length=255)
+    instock = models.CharField(max_length=255, default="non", null=True, blank=True)
     quantite_vendue = models.PositiveIntegerField()
     prix_unitaire_vente = models.DecimalField(max_digits=20, decimal_places=2)
     montant_total_article = models.DecimalField(max_digits=20, decimal_places=2)
