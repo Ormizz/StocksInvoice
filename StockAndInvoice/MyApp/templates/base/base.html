@@ -1,0 +1,246 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <!--plugins-->
+  <link href="{% static 'assets/plugins/simplebar/css/simplebar.css' %}" rel="stylesheet" />
+  <link href="{% static 'assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css' %}" rel="stylesheet" />
+  <link href="{% static 'assets/plugins/metismenu/css/metisMenu.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'assets/plugins/datatable/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'assets/plugins/bs-stepper/css/bs-stepper.css' %}" rel="stylesheet" />
+
+  <!-- CSS Files -->
+  <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/css/bootstrap-extended.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/css/icons.css' %}" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="{% static 'assets/images/logofcs.ico' %}">
+
+
+  <title>INFOSFCS</title>
+</head>
+
+<body>
+
+  <!--start wrapper-->
+  <div class="wrapper">
+
+    <!--start sidebar -->
+    <aside class="sidebar-wrapper" data-simplebar="true">
+      <div class="sidebar-header">
+        <div class="row mx-auto" >
+          <div class="col-lg-5">
+            <img style="height:35px; width:100px" src="{% static 'assets/images/logofcs.png' %}" class="logo-icon" alt="logo icon">
+          </div>
+          {% comment %} <div class="col-lg-5">
+            <h4 class="logo-text">INFOSFCS</h4>
+          </div> {% endcomment %}
+        </div>
+      </div>
+      {% if request.user.groups.all.0.name == 'Gestion' %}
+      <!--navigation gestion-->
+      <ul class="metismenu" id="menu">
+        <li>
+          <a href="{% url 'approvisionnement_list' %}">
+            <div class="parent-icon">
+              <ion-icon name="create-outline"></ion-icon>
+            </div>
+            <div class="menu-title">Faire mes approvisionnements</div>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'commande_client_list' %}">
+            <div class="parent-icon">
+              <ion-icon name="create-outline"></ion-icon>
+            </div>
+            <div class="menu-title">Gérer mes commandes</div>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'needs_list' %}">
+            <div class="parent-icon">
+              <ion-icon name="create-outline"></ion-icon>
+            </div>
+            <div class="menu-title">Mes besoins</div>
+          </a>
+        </li>
+      </ul>
+      <!--end navigation-->
+      {% elif request.user.groups.all.0.name == 'Secretaire' %}
+      <!--navigation secretaire-->
+      <ul class="metismenu" id="menu">
+        <li>
+          <a href="index.html">
+            <div class="parent-icon">
+              <ion-icon name="home-outline"></ion-icon>
+            </div>
+            <div class="menu-title">Dashboard</div>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'facture_list' %}">
+            <div class="parent-icon">
+              <ion-icon name="create-outline"></ion-icon>
+            </div>
+            <div class="menu-title">Faire une proforma</div>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'users_list' %}">
+            <div class="parent-icon">
+              <ion-icon name="create-outline"></ion-icon>
+            </div>
+            <div class="menu-title">Gérer les utilisateurs</div>
+          </a>
+        </li>
+      </ul>
+      <!--end navigation-->
+      {% elif request.user.groups.all.0.name == 'DG' %}
+      <!--navigation admin or dg-->
+      <ul class="metismenu" id="menu">
+        <li>
+          <a href="{% url 'index' %}">
+            <div class="parent-icon">
+              <ion-icon name="home-outline"></ion-icon>
+            </div>
+            <div class="menu-title">Dashboard</div>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'article_list' %}">
+            <div class="parent-icon">
+              <i class="fadeIn animated bx bx-disc"></i>
+            </div>
+            <div class="menu-title">Gérer mes articles</div>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'facture_list' %}">
+            <div class="parent-icon">
+              <i class="fadeIn animated bx bx-file"></i>
+            </div>
+            <div class="menu-title">Faire une proforma</div>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'approvisionnement_list' %}">
+            <div class="parent-icon">
+              <ion-icon name="create-outline"></ion-icon>
+            </div>
+            <div class="menu-title">Faire mes approvisionnements</div>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'commande_client_list' %}">
+            <div class="parent-icon">
+              <i class="fadeIn animated bx bx-task-x"></i>
+            </div>
+            <div class="menu-title">Gérer mes commandes</div>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'needs_list' %}">
+            <div class="parent-icon">
+              <i class="fadeIn animated bx bx-flag"></i>
+            </div>
+            <div class="menu-title">Mes besoins</div>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'users_list' %}">
+            <div class="parent-icon">
+              <i class="fadeIn animated bx bx-id-card"></i>
+            </div>
+            <div class="menu-title">Gérer les utilisateurs</div>
+          </a>
+        </li>
+      </ul>
+      <!--end navigation-->
+      {% else %}
+      No
+      {% endif %}
+    </aside>
+    <!--end sidebar -->
+
+    <!--start top header-->
+    <header class="top-header">
+      <nav class="navbar navbar-expand gap-3">
+        <div class="toggle-icon">
+          <ion-icon name="menu-outline"></ion-icon>
+        </div>
+       
+        <form class="searchbar">
+          <div class="position-absolute top-50 translate-middle-y search-icon ms-3">
+            <ion-icon name="search-outline"></ion-icon>
+          </div>
+          <input class="form-control" type="text" placeholder="Search for anything">
+          <div class="position-absolute top-50 translate-middle-y search-close-icon">
+            <ion-icon name="close-outline"></ion-icon>
+          </div>
+        </form>
+        <div class="top-navbar-right ms-auto">
+          <ul class="navbar-nav align-items-center">
+            <li class="nav-item dropdown dropdown-user-setting">
+              <a class="nav-item" href="{% url 'logout' %}">
+                <div class="fs-3"><i class="fadeIn animated bx bx-log-out"></i></div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <!--end top header-->
+    
+{% block content %}{% endblock content %}
+   <!--start footer-->
+   <footer class="footer">
+    <div class="footer-text">
+      Copyright © 2023. All right reserved.
+    </div>
+  </footer>
+  <!--end footer-->
+
+
+  <!--Start Back To Top Button-->
+  <a href="javaScript:;" class="back-to-top">
+    <ion-icon name="arrow-up-outline"></ion-icon>
+  </a>
+  <!--End Back To Top Button-->
+
+
+</div>
+<!--end wrapper-->
+
+
+<!-- JS Files-->
+<script src="{% static 'assets/js/jquery.min.js' %}"></script>
+<script src="{% static 'assets/plugins/simplebar/js/simplebar.min.js' %}"></script>
+<script src="{% static 'assets/plugins/metismenu/js/metisMenu.min.js' %}"></script>
+<script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<!--plugins-->
+<script src="{% static 'assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
+<script src="{% static 'assets/plugins/apexcharts-bundle/js/apexcharts.min.js' %}"></script>
+<script src="{% static 'assets/plugins/easyPieChart/jquery.easypiechart.js' %}"></script>
+<script src="{% static 'assets/plugins/chartjs/chart.min.js' %}"></script>
+<script src="{% static 'assets/js/index.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>
+<script src="{% static 'assets/js/table-datatable.js' %}"></script>
+<script src="{% static 'assets/plugins/bs-stepper/js/bs-stepper.min.js' %}"></script>
+<script src="{% static 'assets/plugins/bs-stepper/js/main.js' %}"></script>
+<!-- Main JS-->
+<script src="{% static 'assets/js/main.js' %}"></script>
+
+
+</body>
+
+</html>
